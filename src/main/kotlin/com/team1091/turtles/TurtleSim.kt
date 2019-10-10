@@ -11,7 +11,7 @@ class TurtleSim : PApplet() {
     // These are variables in our instance of TurtleSim
     lateinit var turtleImage: PImage                   // This is the picture of a turtle that we draw
     lateinit var background: PGraphics                 // this is our drawing
-    var turtles: MutableList<Turtle> = mutableListOf() // this is a list of each turtle that we are using to draw
+    var turtleList: MutableList<Turtle> = mutableListOf() // this is a list of each turtle that we are using to draw
 
     override fun settings() {
         size(800, 600)
@@ -25,8 +25,10 @@ class TurtleSim : PApplet() {
         background.background(230)
         background.endDraw()
 
-        // Lets set a turtle up to draw a square
-        turtles.add(
+        // START HERE
+
+        // Lets set a turtle up with a a plan to draw a square
+        turtleList.add(
             Turtle(
                 x = 400.0,
                 y = 300.0,
@@ -45,23 +47,23 @@ class TurtleSim : PApplet() {
         )
 
         // Lets make a new turtle that generates a dotted line
-        val commands = mutableListOf<Command>()
+        val commandList = mutableListOf<Command>()
         for (i in 0..20) {
-            commands.add(PenUp())
-            commands.add(DriveForward(10.0))
-            commands.add(PenDown())
-            commands.add(DriveForward(10.0))
+            commandList.add(PenUp())
+            commandList.add(DriveForward(10.0))
+            commandList.add(PenDown())
+            commandList.add(DriveForward(10.0))
         }
 
-        turtles.add(
+        turtleList.add(
             Turtle(
                 x = 200.0,
                 y = 100.0,
                 facingDegrees = 90.0,
-                commands = commands
+                commands = commandList
             )
         )
-
+        // END HERE
     }
 
     // The program keeps hitting this each time it wants a new frame.
@@ -73,7 +75,7 @@ class TurtleSim : PApplet() {
         image(background, 0f, 0f)
 
         // Loop over the turtles, rendering them all
-        for (turtle in turtles) {
+        for (turtle in turtleList) {
             val oldX = turtle.x
             val oldY = turtle.y
 
