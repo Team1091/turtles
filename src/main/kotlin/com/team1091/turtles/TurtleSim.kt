@@ -1,5 +1,6 @@
 package com.team1091.turtles
 
+import com.team1091.turtles.command.*
 import processing.core.PApplet
 import processing.core.PConstants
 import processing.core.PGraphics
@@ -7,58 +8,101 @@ import processing.core.PImage
 
 class TurtleSim : PApplet() {
 
-    lateinit var turtleImage: PImage
-    lateinit var background: PGraphics
-    val turtle = Turtle(20f, 20f, Facing.EAST)
-
-    override fun setup() {
-        turtleImage = loadImage("turtle.png")
-
-        background = createGraphics(width, height)
-        background.beginDraw()
-        background.background(230)
-        background.endDraw()
-    }
+    // These are variables in our instance of TurtleSim
+    lateinit var turtleImage: PImage                   // This is the picture of a turtle that we draw
+    lateinit var background: PGraphics                 // this is our drawing
+    var turtles: MutableList<Turtle> = mutableListOf() // this is a list of each turtle that we are using to draw
 
     override fun settings() {
         size(800, 600)
     }
 
+    // Setup runs after everything is set up, but before we start looping
+    override fun setup() {
+        turtleImage = loadImage("turtle.png")
+        background = createGraphics(width, height)
+        background.beginDraw()
+        background.background(230)
+        background.endDraw()
+
+        // Lets set a turtle up to draw a rectagle
+        turtles.add(
+            Turtle(
+                x = 400.0,
+                y = 300.0,
+                facingDegrees = 0.0,
+                commands = mutableListOf( // Draw a square
+                    DriveForward(100.0),
+                    TurnLeft(90.0),
+                    DriveForward(100.0),
+                    TurnLeft(90.0),
+                    DriveForward(100.0),
+                    TurnLeft(90.0),
+                    DriveForward(100.0),
+                    TurnLeft(90.0)
+                )
+            )
+        )
+
+        // Lets make a new turtle that generates
+        val commands = mutableListOf<Command>()
+        for (i in 0..20) {
+            commands.add(PenUp())
+            commands.add(DriveForward(10.0))
+            commands.add(PenDown())
+            commands.add(DriveForward(10.0))
+        }
+
+        // lets set another one up to do one, backwards
+        turtles.add(
+            Turtle(
+                x = 200.0,
+                y = 100.0,
+                facingDegrees = 90.0,
+                commands = commands
+            )
+        )
+
+    }
+
+    // The program keeps hitting this each time it wants a new frame.
+    // There is a loop calling this method
     override fun draw() {
+
+        // Draw the background
         imageMode(PConstants.CORNER)
         image(background, 0f, 0f)
 
-        val oldX = turtle.x
-        val oldY = turtle.y
+        // Loop over the turtles, rendering them all
+        for (turtle in turtles) {
+            val oldX = turtle.x
+            val oldY = turtle.y
 
-        if (keyPressed && key == 'a') {
-            turtle.turnLeft()
+            // This code executes the current turtle's commands
+            val commandToExecute = turtle.commands.firstOrNull()
+            if (commandToExecute != null) {
+                val result = commandToExecute.apply(turtle, 0.1)
 
-        } else if (keyPressed && key == 'd') {
-            turtle.turnRight()
+                if (result == null)
+                    turtle.commands.removeAt(0)
+            }
 
-        } else if (keyPressed && key == 'w') {
-            turtle.moveForward(10f)
+            // if the pen is down, we can draw
+            if (turtle.penDown) {
+                background.beginDraw()
+                background.stroke(10)
+                background.line(oldX.toFloat(), oldY.toFloat(), turtle.x.toFloat(), turtle.y.toFloat())
+                background.endDraw()
+            }
 
-        } else if (keyPressed && key == 's') {
-            turtle.moveBackward(10f)
+            // This renders the turtles
+            imageMode(CENTER)
+            pushMatrix()
+            translate(turtle.x.toFloat(), turtle.y.toFloat())
+            rotate((turtle.facing + Math.PI.toFloat() / 2.0).toFloat())
+            image(turtleImage, 0f, 0f)
+            popMatrix()
         }
-
-        if(turtle.draw){
-            background.beginDraw()
-            background.stroke(10)
-            background.line(oldX, oldY, turtle.x, turtle.y)
-            background.endDraw()
-        }
-
-        //turtle.render(turtleImage)
-        imageMode(CENTER)
-        pushMatrix()
-        translate(turtle.x, turtle.y)
-        rotate(turtle.facing.angle)
-
-        image(turtleImage, 0f, 0f)
-        popMatrix()
     }
 }
 
