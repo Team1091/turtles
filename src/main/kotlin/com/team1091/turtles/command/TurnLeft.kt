@@ -21,7 +21,7 @@ class TurnLeft(val turn: Double) : Command {
         if (distanceTurned >= turn)
             return null
 
-        return this;
+        return this
     }
 
 }

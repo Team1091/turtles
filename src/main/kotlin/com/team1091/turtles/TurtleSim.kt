@@ -25,7 +25,7 @@ class TurtleSim : PApplet() {
         background.background(230)
         background.endDraw()
 
-        // Lets set a turtle up to draw a rectagle
+        // Lets set a turtle up to draw a square
         turtles.add(
             Turtle(
                 x = 400.0,
@@ -44,7 +44,7 @@ class TurtleSim : PApplet() {
             )
         )
 
-        // Lets make a new turtle that generates
+        // Lets make a new turtle that generates a dotted line
         val commands = mutableListOf<Command>()
         for (i in 0..20) {
             commands.add(PenUp())
@@ -53,7 +53,6 @@ class TurtleSim : PApplet() {
             commands.add(DriveForward(10.0))
         }
 
-        // lets set another one up to do one, backwards
         turtles.add(
             Turtle(
                 x = 200.0,
