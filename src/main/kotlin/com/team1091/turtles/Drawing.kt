@@ -6,7 +6,7 @@ import kotlin.random.Random
 class Drawing : PApplet() {
     var y = 487f
     var x = 287f
-    var yVelocity = 10f
+    var yVelocity = 3f
     var xVelocity = 5f
     var leftPaddle = Paddle(10f, 265f, 70f, 10f)
     var rightPaddle = Paddle(780f, 265f, 70f, 10f)
@@ -46,8 +46,8 @@ class Drawing : PApplet() {
     // The program keeps hitting this each time it wants a new frame.
     // There is a loop calling this method
     override fun draw() {
-        background(255f, 130f, 0f)
-        fill(color(0, 0, 0))
+        background(35f, 35f, 35f)
+        fill(color(255, 130, 0))
         rect(x, y, 25f, 25f, 14f)
         rect(leftPaddle.x, leftPaddle.y, leftPaddle.width, leftPaddle.height, 5f)
         rect(rightPaddle.x, rightPaddle.y, rightPaddle.width, rightPaddle.height, 5f)
